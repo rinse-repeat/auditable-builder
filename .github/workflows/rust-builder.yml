@@ -110,6 +110,8 @@ jobs:
           echo Home=$HOME
           echo GITHUB_WORKSPACE=$GITHUB_WORKSPACE
           ls -la ./
+          find $HOME -type f -name cargo-auditable
+          find $HOME -type d -name \*zig\*
           echo PWD=$PWD
       #######################################################
       # Zig & Cross-Compiling
