@@ -32,7 +32,6 @@ on:
 jobs:
 
   rust-builder:
-    needs: [install-zig]
     name: Rust ${{ inputs.component }} @ ${{ inputs.serial }} for ${{ matrix.rust-target }} on (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
