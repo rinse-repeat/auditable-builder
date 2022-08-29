@@ -14,6 +14,22 @@ on:
         type: string
 
 jobs:
+
+  install-zig:
+    needs: [matrix]
+    uses: rinse-repeat/zig-gh-helper/.github/workflows/zig_install.yml@main
+    with:
+      target: ${{ matrix.rust-target }}
+      os: ${{ matrix.os }}
+      use-cache: true
+      ext-cache: AAA
+      zig-version: 0.9.1
+    name: Zig Installer
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJson(inputs.json-matrix) }}
+
   build:
     uses: rinse-repeat/rust-auditable-builder/.github/workflows/rust-builder.yml@main
     with:
