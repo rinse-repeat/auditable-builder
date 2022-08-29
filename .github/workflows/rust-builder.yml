@@ -100,7 +100,7 @@ jobs:
             ~/.cargo/bin/rust-audit-info
       - name: Install Cargo Tools
         run: |
-          if [ ! -f ~/.cargo/bin/cargo-auditable ]; then
+          if [ ! -f ~/work/.cargo/bin/cargo-auditable ]; then
             cargo install cargo-auditable rust-audit-info
           fi
       #######################################################
