@@ -2,8 +2,8 @@ name: "Rust Auditable Builder"
 
 on:
 # debug:
-  workflow_dispatch:
-#  workflow_call:
+#  workflow_dispatch:
+  workflow_call:
     inputs:
       component:
         description: 'Component user/repo'
