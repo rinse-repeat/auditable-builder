@@ -57,7 +57,7 @@ jobs:
       component: ${{ github.event.inputs.name }}
       rust-target: ${{ matrix.rust-target }}
       os: ${{ matrix.os }}
-      target: ${{ matrix.rust }}
+      rust: ${{ matrix.rust }}
       use-cache: true
       use-locked: false
       serial: test
