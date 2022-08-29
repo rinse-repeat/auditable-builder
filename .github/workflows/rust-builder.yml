@@ -112,8 +112,6 @@ jobs:
           if [ ! -f ~/.cargo/bin/cargo-auditable ]; then
             cargo install cargo-auditable rust-audit-info
           fi
-      - name: ls -laR .cargo
-        run: ls -laR ~/.cargo
       #######################################################
       # Zig & Cross-Compiling
       #
