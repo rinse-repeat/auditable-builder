@@ -1,0 +1,173 @@
+name: "Rust Auditable Builder"
+
+on:
+# debug:
+  workflow_dispatch:
+#  workflow_call:
+    inputs:
+      component:
+        description: 'Component user/repo'
+        required: true
+        type: string
+      serial:
+        description: 'Unique Serial Cache Id'
+        required: true
+        type: string
+      use-cache:
+        description: 'Use cache?'
+        required: true
+        default: true
+        type: boolean
+      use-locked:
+        description: 'Use locked?'
+        required: true
+        default: true
+        type: boolean        
+      json-matrix:
+        description: 'JSON Rust Targets'
+        required: true
+        default: '["x86_64-unknown-linux-gnu"]'
+        type: string
+
+jobs:
+
+  install-zig:
+    needs: [matrix]
+    uses: rinse-repeat/zig-gh-helper/.github/workflows/zig_install.yml@main
+    with:
+      target: ${{ matrix.rust-target }}
+      os: ${{ matrix.os }}
+      use-cache: true
+      ext-cache: AAA
+      zig-version: 0.9.1    
+    name: Zig Installer
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJson(inputs.json-matrix) }}
+
+  rust-builder:
+    needs: [install-zig]
+    name: Rust ${{ inputs.component }} @ ${{ inputs.serial }} for ${{ matrix.rust-target }} on (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(inputs.json-matrix) }}
+#        os: [ubuntu-latest]
+#        rust-target: ${{ fromJSON(inputs.json-rust-target) }}
+#        rust: [stable]
+    env:
+      TARGET_DIR: target/${{ matrix.rust-target }}/release
+      REPO_NORMAL: unknown-unknown
+    steps:
+      - run: |
+          REPO_NORMAL=$(echo ${{ inputs.component }} | sed 's/\//-/')
+          echo "REPO_NORMAL=$REPO_NORMAL" >> $GITHUB_ENV
+      - name: Pull zig-helper
+        uses: actions/checkout@v3
+        with:
+          repository: rinse-repeat/zig-gh-helper
+          path: zig-helper
+      - name: Environment ZIG (Non-Windows)
+        if: ${{ contains(inputs.os, 'windows') == false }}
+        run: |
+          source ./zig-helper/zig_map.sh
+          zig_triplets_env $GITHUB_ENV ${{ inputs.target }}
+          cat $GITHUV_ENV
+      - name: NIX Cache ZIG
+        if: ${{ contains(inputs.os, 'windows') == false }}
+        uses: actions/cache@v3
+        with:
+          key: zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH}}-${{ env.ZIG_VERSION}}-AAA
+          path: ./zig/zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ env.ZIG_VERSION }}
+      - uses: actions/checkout@v3
+        with:
+          repository: ${{ inputs.component }}
+      - name: Install Rust ${{ matrix.rust }}
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust }}
+          override: true
+          target: ${{ matrix.rust-target }}
+      - name: System
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+        run: sudo apt update && sudo apt upgrade && sudo apt install -qq lld crossbuild-essential-arm64 crossbuild-essential-armhf
+      ######################################################
+      # Cargo Tools - Auditable, rust-audit-info
+      #
+      # https://github.com/rust-secure-code/cargo-auditable
+      #
+      - name: Cache Cargo Tools
+        if: ${{ inputs.use-cache }}
+        uses: actions/cache@v3
+        with:
+          key: cargo-tools-20220827-000
+          path: |
+            ~/.cargo
+      - name: Install Cargo Tools
+        run: |
+          if [ ! -f $HOME/.cargo/bin/cargo-auditable ]; then
+            cargo install cargo-auditable rust-audit-info
+          fi
+      #######################################################
+      # Zig & Cross-Compiling
+      #
+      # https://ziglang.org/download/0.9.1/zig-TRIPLET-0.9.1.tar.xz
+      - name: .Cargo setup
+        run: |
+          cat >~/.cargo/config <<EOF
+          [target.x86_64-unknown-linux-gnu]
+          linker = "./zig/zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ env.ZIG_VERSION }} cc"
+          #[target.x86_64-apple-darwin]
+          #[target.aarch64-unknown-linux-gnu]
+          #linker = "aarch64-linux-gnu-gcc"
+          #[target.aarch64-unknown-linux-musl]
+          #linker = "aarch64-linux-gnu-gcc"
+          #[target.armv7-unknown-linux-gnueabihf]
+          #linker = "arm-linux-gnueabihf-gcc"
+          #[target.armv7-unknown-linux-musleabihf]
+          #linker = "arm-linux-gnueabihf-gcc"
+          #[target.arm-unknown-linux-gnueabihf]
+          #linker = "arm-linux-gnueabihf-gcc"
+          #[target.arm-unknown-linux-musleabihf]
+          #linker = "arm-linux-gnueabihf-gcc"
+          EOF
+      ######################################################
+      # Use serials:
+      # PR-XXX-DATE
+      # 
+      - uses: Swatinem/rust-cache@v2
+        if: ${{ inputs.use-cache }}
+        with:
+          key: ${{ matrix.os }}-${{ matrix.rust-target }}-${{ inputs.component }}-${{ inputs.serial }}-000
+
+      - name: Build Auditable Build (Locked)
+        if: ${{ inputs.use-locked == true }}
+        run: |
+          cargo auditable build --release --locked --bins --color always --target ${{ matrix.rust-target }} --target-dir ${{ env.TARGET_DIR }}
+
+      - name: Build Auditable Build (Unlocked)
+        if: ${{ inputs.use-locked == false }}
+        run: |
+          cargo auditable build --release --bins --color always --target ${{ matrix.rust-target }} --target-dir ${{ env.TARGET_DIR }}
+
+      - name: ls -laR (debug)
+        run: ls -laR target/
+      ######################################################
+      # Upload artifacts
+      #
+      # target/x86_64-unknown-linux-gnu/release/x86_64-unknown-linux-gnu - !!
+      #
+      - name: Upload artifact - ${{ inputs.component }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.rust-target }}
+          path: |
+            ${{ env.TARGET_DIR }}/${{ matrix.rust-target }}/release
+            !${{ env.TARGET_DIR }}/${{ matrix.rust-target }}/release/build
+            !${{ env.TARGET_DIR }}/${{ matrix.rust-target }}/release/deps
+            # .fingerprint .cargo-lock
+            !${{ env.TARGET_DIR }}/${{ matrix.rust-target }}/release/.*
+            !${{ env.TARGET_DIR }}/${{ matrix.rust-target }}/release/*.d
+          retention-days: 1
