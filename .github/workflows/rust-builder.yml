@@ -85,12 +85,6 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: ${{ inputs.component }}
-      - name: Install Rust ${{ inputs }}
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: ${{ inputs.rust }}
-          override: true
-          target: ${{ inputs.rust-target }}
       - name: System
         if: ${{ startsWith(inputs.os, 'ubuntu') }}
         run: sudo apt update && sudo apt upgrade && sudo apt install -qq lld crossbuild-essential-arm64 crossbuild-essential-armhf
@@ -103,14 +97,23 @@ jobs:
         if: ${{ inputs.use-cache }}
         uses: actions/cache@v3
         with:
-          key: cargo-tools-20220827-000
+          key: cargo-tools-${{ $inputs.os }}-${{ inputs.rust-target }}-20220827-000
           path: |
             ~/.cargo
+      - name: Install Rust ${{ inputs }}
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ inputs.rust }}
+          override: true
+          target: ${{ inputs.rust-target }}
+      - name: ls -laR .cargo
+        run: ls -laR .cargo
       - name: Install Cargo Tools
         run: |
-          if [ ! -f $HOME/.cargo/bin/cargo-auditable ]; then
+          if [ ! -f .cargo/bin/cargo-auditable ]; then
             cargo install cargo-auditable rust-audit-info
           fi
+
       #######################################################
       # Zig & Cross-Compiling
       #
