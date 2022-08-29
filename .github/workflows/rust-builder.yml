@@ -38,7 +38,7 @@ on:
         type: string
       rust:
         description: 'Rust Version'
-        reqired: true
+        required: true
         type: string
 
 jobs:
