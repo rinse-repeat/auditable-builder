@@ -69,7 +69,7 @@ jobs:
         if: ${{ contains(inputs.os, 'windows') == false }}
         run: |
           source ./zig-helper/zig_map.sh
-          zig_triplets_env $GITHUB_ENV ${{ inputs.target }}
+          zig_triplets_env $GITHUB_ENV ${{ inputs.rust-target }}
           cat $GITHUV_ENV
       - name: NIX Cache ZIG
         if: ${{ contains(inputs.os, 'windows') == false }}
