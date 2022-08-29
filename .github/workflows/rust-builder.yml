@@ -40,6 +40,11 @@ on:
         description: 'Rust Version'
         required: true
         type: string
+      zig-version:
+        description: 'Zig version'
+        requires: true
+        default: 0.9.1
+        type: string
 
 jobs:
 
@@ -75,8 +80,8 @@ jobs:
         if: ${{ contains(inputs.os, 'windows') == false }}
         uses: actions/cache@v3
         with:
-          key: zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH}}-${{ env.ZIG_VERSION}}-AAA
-          path: ./zig/zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ env.ZIG_VERSION }}
+          key: zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH}}-${{ inputs.zig-version }}-AAA
+          path: ./zig/zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ inputs.zig-version }}
       - uses: actions/checkout@v3
         with:
           repository: ${{ inputs.component }}
@@ -109,12 +114,11 @@ jobs:
       #######################################################
       # Zig & Cross-Compiling
       #
-      # https://ziglang.org/download/0.9.1/zig-TRIPLET-0.9.1.tar.xz
-      - name: .Cargo setup
+      - name: .Cargo setup for Zig
         run: |
           cat >~/.cargo/config <<EOF
           [target.x86_64-unknown-linux-gnu]
-          linker = "./zig/zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ env.ZIG_VERSION }} cc"
+          linker = "./zig/zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ inputs.zig-version }}/zig cc"
           #[target.x86_64-apple-darwin]
           #[target.aarch64-unknown-linux-gnu]
           #linker = "aarch64-linux-gnu-gcc"
