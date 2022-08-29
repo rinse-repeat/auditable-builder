@@ -56,8 +56,7 @@ jobs:
     uses: rinse-repeat/rust-auditable-builder/.github/workflows/rust-builder.yml@main
     with:
       component: ${{ github.event.inputs.name }}
-      json-matrix:
-        include: ${{ fromJson(needs.matrix.outputs.matrix-json) }}
+      json-matrix: ${{ needs.matrix.outputs.matrix-json }}
       use-cache: true
       use-locked: false
       serial: test
