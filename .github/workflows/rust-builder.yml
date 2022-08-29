@@ -102,7 +102,7 @@ jobs:
 #        run: ls -laR $HOME/
       - name: Install Cargo Tools
         run: |
-          if [ ! -f $HOME/.cargo/bin/cargo-auditable ]; then
+          if [[ ! -f $HOME/.cargo/bin/cargo-auditable ]]; then
             cargo install cargo-auditable rust-audit-info
           fi
       - name: Debug
