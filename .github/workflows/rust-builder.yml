@@ -97,7 +97,7 @@ jobs:
         if: ${{ inputs.use-cache }}
         uses: actions/cache@v3
         with:
-          key: cargo-tools-${{ $inputs.os }}-${{ inputs.rust-target }}-20220827-000
+          key: cargo-tools-${{ inputs.os }}-${{ inputs.rust-target }}-20220827-000
           path: |
             ~/.cargo
       - name: Install Rust ${{ inputs }}
