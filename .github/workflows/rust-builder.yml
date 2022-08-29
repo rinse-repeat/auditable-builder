@@ -96,11 +96,13 @@ jobs:
         with:
           key: cargo-tools-${{ inputs.os }}-${{ inputs.rust-target }}-20220827-000
           path: |
-            ~/.cargo/bin/cargo-auditable
-            ~/.cargo/bin/rust-audit-info
+            .cargo/bin/cargo-auditable
+            .cargo/bin/rust-audit-info
+      - name: ls
+        run: ls -laR $HOME/
       - name: Install Cargo Tools
         run: |
-          if [ ! -f ~/work/.cargo/bin/cargo-auditable ]; then
+          if [ ! -f $HOME/.cargo/bin/cargo-auditable ]; then
             cargo install cargo-auditable rust-audit-info
           fi
       #######################################################
