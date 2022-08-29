@@ -98,8 +98,8 @@ jobs:
           path: |
             .cargo/bin/cargo-auditable
             .cargo/bin/rust-audit-info
-      - name: ls
-        run: ls -laR $HOME/
+#      - name: ls
+#        run: ls -laR $HOME/
       - name: Install Cargo Tools
         run: |
           if [ ! -f $HOME/.cargo/bin/cargo-auditable ]; then
@@ -112,7 +112,7 @@ jobs:
         run: |
           cat >~/.cargo/config <<EOF
           [target.x86_64-unknown-linux-gnu]
-          linker = "$HOME/work/zig/zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ inputs.zig-version }}/zig cc"
+          linker = "${{ GITHUB_WORKSPACE }}/zig/zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ inputs.zig-version }}/zig cc"
           #[target.x86_64-apple-darwin]
           #[target.aarch64-unknown-linux-gnu]
           #linker = "aarch64-linux-gnu-gcc"
