@@ -42,7 +42,7 @@ on:
         type: string
       zig-version:
         description: 'Zig version'
-        requires: true
+        required: true
         default: 0.9.1
         type: string
 
