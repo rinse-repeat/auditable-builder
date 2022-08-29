@@ -66,12 +66,15 @@ jobs:
           source ./zig-helper/zig_map.sh
           zig_triplets_env $GITHUB_ENV ${{ inputs.rust-target }}
           cat $GITHUV_ENV
+      - uses: actions/checkout@v3
+        with:
+          repository: ${{ inputs.component }}
       - name: NIX Cache ZIG
         if: ${{ contains(inputs.os, 'windows') == false }}
         uses: actions/cache@v3
         with:
           key: zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH}}-${{ inputs.zig-version }}-AAA
-          path: ./zig/zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ inputs.zig-version }}
+          path: ~/zig/zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ inputs.zig-version }}
       - name: Debug
         run: |
           echo Home=$HOME
@@ -80,9 +83,6 @@ jobs:
           find $HOME -type f -name cargo-auditable
           find $HOME -type d -name \*zig\*
           echo PWD=$PWD
-      - uses: actions/checkout@v3
-        with:
-          repository: ${{ inputs.component }}
       - name: System
         if: ${{ startsWith(inputs.os, 'ubuntu') }}
         run: sudo apt update && sudo apt upgrade && sudo apt install -qq lld crossbuild-essential-arm64 crossbuild-essential-armhf
