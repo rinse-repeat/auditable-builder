@@ -23,17 +23,12 @@ on:
         required: true
         default: true
         type: boolean        
-#      json-matrix:
-#        description: 'JSON Rust Targets'
-#        required: true
-#        default: '["x86_64-unknown-linux-gnu"]'
-#        type: string
-      rust-target:
-        description: 'Rust Target'
+      os:
+        description: 'GitHub Runner'
         required: true
         type: string
-      os:
-        description: 'Runner OS'
+      rust-target:
+        description: 'Rust Target'
         required: true
         type: string
       rust:
@@ -53,11 +48,6 @@ jobs:
     runs-on: ${{ inputs.os }}
     strategy:
       fail-fast: false
-#      matrix:
-#        include: ${{ fromJSON(inputs.json-matrix) }}
-#        os: [ubuntu-latest]
-#        rust-target: ${{ fromJSON(inputs.json-rust-target) }}
-#        rust: [stable]
     env:
       TARGET_DIR: target/${{ inputs.rust-target }}/release
       REPO_NORMAL: unknown-unknown
@@ -88,6 +78,7 @@ jobs:
       - name: System
         if: ${{ startsWith(inputs.os, 'ubuntu') }}
         run: sudo apt update && sudo apt upgrade && sudo apt install -qq lld crossbuild-essential-arm64 crossbuild-essential-armhf
+
       ######################################################
       # Rust, Cargo Tools - Auditable, rust-audit-info
       #
@@ -119,7 +110,7 @@ jobs:
         run: |
           cat >~/.cargo/config <<EOF
           [target.x86_64-unknown-linux-gnu]
-          linker = "./zig/zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ inputs.zig-version }}/zig cc"
+          linker = "${{ ~/work/zig/zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ inputs.zig-version }}/zig cc"
           #[target.x86_64-apple-darwin]
           #[target.aarch64-unknown-linux-gnu]
           #linker = "aarch64-linux-gnu-gcc"
