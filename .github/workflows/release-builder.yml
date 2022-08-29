@@ -51,7 +51,7 @@ jobs:
         include: ${{ fromJson(needs.matrix.outputs.matrix-json) }}
 
   build:
-    needs: [install-zig]
+    needs: [matrix, install-zig]
     uses: rinse-repeat/rust-auditable-builder/.github/workflows/rust-builder.yml@main
     with:
       component: ${{ github.event.inputs.name }}
