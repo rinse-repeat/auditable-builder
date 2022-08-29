@@ -45,7 +45,6 @@ jobs:
       use-cache: false
       ext-cache: AAA
       zig-version: 0.9.1    
-    name: The Tester
     strategy:
       fail-fast: false
       matrix:
@@ -56,10 +55,16 @@ jobs:
     uses: rinse-repeat/rust-auditable-builder/.github/workflows/rust-builder.yml@main
     with:
       component: ${{ github.event.inputs.name }}
-      json-matrix: ${{ needs.matrix.outputs.matrix-json }}
+      rust-target: ${{ matrix.rust-target }}
+      os: ${{ matrix.os }}
+      target: ${{ matrix.rust }}
       use-cache: true
       use-locked: false
       serial: test
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJson(needs.matrix.outputs.matrix-json) }}
 
 #  docker-build:
 #    uses: pinkforest/auditable-builder/.github/workflows/docker-builder.yml@main
