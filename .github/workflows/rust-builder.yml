@@ -81,6 +81,7 @@ jobs:
           echo GITHUB_WORKSPACE=$GITHUB_WORKSPACE
           ls -la ./
           find $HOME -type f -name cargo-auditable
+          cp -R zig $HOME/
           find $HOME -type d -name \*zig\*
           echo PWD=$PWD
       - name: System
