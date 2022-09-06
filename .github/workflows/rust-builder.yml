@@ -69,12 +69,14 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: ${{ inputs.component }}
+          
       - name: NIX Cache ZIG
         if: ${{ contains(inputs.os, 'windows') == false }}
         uses: actions/cache@v3
         with:
           key: zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ inputs.zig-version }}-AAA
-          path: ./zig/zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ inputs.ZIG_VERSION }}
+          path: ${{ env.HOME }}/zig/zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ inputs.zig-version }}
+          
       - name: Debug
         run: |
           echo Home=$HOME
