@@ -169,12 +169,12 @@ jobs:
       - name: Build Auditable Build (Locked)
         if: ${{ inputs.use-locked == true }}
         run: |
-          CC="$HOME/zcc.sh" cargo auditable build --release --locked --bins --color always --target ${{ inputs.rust-target }} --target-dir ${{ env.TARGET_DIR }}
+          CC="$HOME/zcc.sh" cargo build --release --locked --bins --color always --target ${{ inputs.rust-target }} --target-dir ${{ env.TARGET_DIR }}
 
       - name: Build Auditable Build (Unlocked)
         if: ${{ inputs.use-locked == false }}
         run: |
-          CC="$HOME/zcc.sh" cargo auditable build --release --bins --color always --target ${{ inputs.rust-target }} --target-dir ${{ env.TARGET_DIR }}
+          CC="$HOME/zcc.sh" cargo build --release --bins --color always --target ${{ inputs.rust-target }} --target-dir ${{ env.TARGET_DIR }}
 
       - name: ls -laR (debug)
         run: ls -laR target/
