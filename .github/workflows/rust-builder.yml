@@ -74,7 +74,7 @@ jobs:
         uses: actions/cache@v3
         with:
           key: zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ inputs.zig-version }}-AAA
-          path: ${{ env.HOME }}/zig/zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ inputs.ZIG_VERSION }}
+          path: ./zig/zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ inputs.ZIG_VERSION }}
       - name: Debug
         run: |
           echo Home=$HOME
