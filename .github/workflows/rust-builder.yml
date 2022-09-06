@@ -73,8 +73,8 @@ jobs:
         if: ${{ contains(inputs.os, 'windows') == false }}
         uses: actions/cache@v3
         with:
-          key: zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH}}-${{ inputs.zig-version }}-AAA
-          path: "${{ env.HOME }}/zig/zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ inputs.zig-version }}"
+          key: zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ inputs.zig-version }}-AAA
+          path: ~/zig/zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ inputs.zig-version }}
       - name: Debug
         run: |
           echo Home=$HOME
