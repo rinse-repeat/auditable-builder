@@ -105,7 +105,7 @@ jobs:
         if: ${{ inputs.use-cache }}
         uses: actions/cache@v3
         with:
-          key: cargo-tools-${{ inputs.os }}-${{ inputs.rust-target }}-20220827-000
+          key: cargo-tools-${{ inputs.os }}-20220827-000
           path: |
             .cargo/bin/cargo-auditable
             .cargo/bin/rust-audit-info
@@ -154,6 +154,9 @@ jobs:
         if: ${{ inputs.use-cache }}
         with:
           key: ${{ inputs.os }}-${{ inputs.rust-target }}-${{ inputs.component }}-${{ inputs.serial }}-000
+
+      - name: LS ...
+        run: ls -laR $HOME | grep zig
 
       - name: Build Auditable Build (Locked)
         if: ${{ inputs.use-locked == true }}
