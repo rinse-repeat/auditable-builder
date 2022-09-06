@@ -82,8 +82,6 @@ jobs:
           ls -la ./
           find $HOME -type f -name cargo-auditable
           find $HOME -type d -name \*zig\*
-#          cp -R zig $HOME/
-#          find $HOME -type d -name \*zig\*
           echo PWD=$PWD
       - name: System
         if: ${{ startsWith(inputs.os, 'ubuntu') }}
