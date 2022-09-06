@@ -74,15 +74,16 @@ jobs:
         uses: actions/cache@v3
         with:
           key: zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH}}-${{ inputs.zig-version }}-AAA
-          path: ~/zig/zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ inputs.zig-version }}
+          path: $HOME/zig/zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ inputs.zig-version }}
       - name: Debug
         run: |
           echo Home=$HOME
           echo GITHUB_WORKSPACE=$GITHUB_WORKSPACE
           ls -la ./
           find $HOME -type f -name cargo-auditable
-          cp -R zig $HOME/
           find $HOME -type d -name \*zig\*
+#          cp -R zig $HOME/
+#          find $HOME -type d -name \*zig\*
           echo PWD=$PWD
       - name: System
         if: ${{ startsWith(inputs.os, 'ubuntu') }}
