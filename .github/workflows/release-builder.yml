@@ -45,7 +45,7 @@ jobs:
       rust: ${{ matrix.rust }}
       use-cache: true
       use-locked: false
-      serial: test
+      serial: test2
       zig-version: 0.9.1
     strategy:
       fail-fast: false
