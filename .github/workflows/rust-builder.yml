@@ -133,7 +133,7 @@ jobs:
         run: |
           cat >~/zcc.sh <<EOF        
           #!/bin/sh
-          $HOME/zig/zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ inputs.zig-version }}/zig cc -target ${{ env.ZIG_ARCH }}-${{ env.ZIG_OS }} ${{ '$@' }}
+          $HOME/zig/zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ inputs.zig-version }}/zig cc -target ${{ env.ZIG_ARCH }}-${{ env.ZIG_OS }} \$@
           EOF
           cat ~/zcc.sh
           chmod a+xrs ~/zcc.sh
