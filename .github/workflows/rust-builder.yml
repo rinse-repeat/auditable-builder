@@ -162,9 +162,6 @@ jobs:
         with:
           key: ${{ inputs.os }}-${{ inputs.rust-target }}-${{ inputs.repository }}-${{ inputs.serial }}-000
 
-      - name: LS ...
-        run: ls -laR $HOME | grep zig
-
       - name: Build Auditable Build (Locked)
         if: ${{ inputs.use-locked == true }}
         run: |
