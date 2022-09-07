@@ -87,10 +87,10 @@ jobs:
           find $HOME -type d -name \*zig\*
           echo PWD=$PWD
 
-# long live the zig
-#      - name: System
-#        if: ${{ startsWith(inputs.os, 'ubuntu') }}
-#        run: sudo apt update && sudo apt upgrade && sudo apt install -qq lld crossbuild-essential-arm64 crossbuild-essential-armhf
+# long live the zig.. or not
+      - name: System
+        if: ${{ startsWith(inputs.os, 'ubuntu') }}
+        run: sudo apt update && sudo apt upgrade && sudo apt install -qq lld crossbuild-essential-arm64 crossbuild-essential-armhf
 
       ######################################################
       # Rust, Cargo Tools - Auditable, rust-audit-info
@@ -141,10 +141,10 @@ jobs:
           cat ~/zcc.sh
           chmod a+xrs ~/zcc.sh
           cat >~/.cargo/config <<EOF
-          [target.x86_64-unknown-linux-musl]
-          linker = "$HOME/zcc.sh"
+          #[target.x86_64-unknown-linux-musl]
+          #linker = "$HOME/zcc.sh"
           [target.aarch64-unknown-linux-musl]
-          linker = "$HOME/zcc.sh"
+          linker = "aarch64-linux-gnu-gcc"
           [target.aarch64-unknown-linux-gnu]
           linker = "aarch64-linux-gnu-gcc"
           [target.armv7-unknown-linux-gnueabihf]
@@ -165,17 +165,10 @@ jobs:
         with:
           key: ${{ inputs.os }}-${{ inputs.rust-target }}-${{ inputs.repository }}-${{ inputs.serial }}-000
 
-      - name: Build Auditable Build (Locked)
-        if: ${{ inputs.use-locked == true }}
+      - name: Build Auditable Build
         shell: bash
         run: |
-          CC="$HOME/zcc.sh" cargo build --release --locked --bins --color always --target ${{ inputs.rust-target }} --target-dir ${{ env.TARGET_DIR }}
-
-      - name: Build Auditable Build (Unlocked)
-        if: ${{ inputs.use-locked == false }}
-        shell: bash
-        run: |
-          CC="$HOME/zcc.sh" cargo build --release --bins --color always --target ${{ inputs.rust-target }} --target-dir ${{ env.TARGET_DIR }}
+          cargo auditable build --release --locked --bins --color always --target ${{ inputs.rust-target }} --target-dir ${{ env.TARGET_DIR }}
 
       - name: ls -laR (debug)
         run: ls -laR target/
