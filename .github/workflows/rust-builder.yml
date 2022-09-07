@@ -5,8 +5,8 @@ on:
 #  workflow_dispatch:
   workflow_call:
     inputs:
-      component:
-        description: 'Component user/repo'
+      repository:
+        description: 'Input user/repo'
         required: true
         type: string
       serial:
@@ -44,7 +44,7 @@ on:
 jobs:
 
   rust-builder:
-    name: Rust ${{ inputs.component }} @ ${{ inputs.serial }} for ${{ inputs.rust-target }} on (${{ inputs.os }})
+    name: Rust ${{ inputs.repository }} @ ${{ inputs.serial }} for ${{ inputs.rust-target }} on (${{ inputs.os }})
     runs-on: ${{ inputs.os }}
     strategy:
       fail-fast: false
@@ -53,7 +53,7 @@ jobs:
       REPO_NORMAL: unknown-unknown
     steps:
       - run: |
-          REPO_NORMAL=$(echo ${{ inputs.component }} | sed 's/\//-/')
+          REPO_NORMAL=$(echo ${{ inputs.repository }} | sed 's/\//-/')
           echo "REPO_NORMAL=$REPO_NORMAL" >> $GITHUB_ENV
       - name: Pull zig-helper
         uses: actions/checkout@v3
@@ -68,7 +68,7 @@ jobs:
           cat $GITHUV_ENV
       - uses: actions/checkout@v3
         with:
-          repository: ${{ inputs.component }}
+          repository: ${{ inputs.repository }}
           
       - name: NIX Cache ZIG
         if: ${{ contains(inputs.os, 'windows') == false }}
@@ -160,7 +160,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         if: ${{ inputs.use-cache }}
         with:
-          key: ${{ inputs.os }}-${{ inputs.rust-target }}-${{ inputs.component }}-${{ inputs.serial }}-000
+          key: ${{ inputs.os }}-${{ inputs.rust-target }}-${{ inputs.repository }}-${{ inputs.serial }}-000
 
       - name: LS ...
         run: ls -laR $HOME | grep zig
@@ -182,7 +182,7 @@ jobs:
       #
       # target/x86_64-unknown-linux-gnu/release/x86_64-unknown-linux-gnu - !!
       #
-      - name: Upload artifact - ${{ inputs.component }}
+      - name: Upload artifact - ${{ inputs.repository }}
         uses: actions/upload-artifact@v2
         with:
           name: ${{ inputs.rust-target }}

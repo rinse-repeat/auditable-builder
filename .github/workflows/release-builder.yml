@@ -4,7 +4,7 @@ on:
 #  workflow_dispatch:
   workflow_call:
     inputs:
-      name:
+      repository:
         description: 'Repository'
         required: true
         type: string
@@ -30,17 +30,17 @@ jobs:
       # 4) Roll the release from the 3) branch and include the built binary artifacts
       #
       - run: |
-          REPO_ONLY_NORMAL=$(echo ${{ inputs.name }} | sed 's/.*\///')
+          REPO_ONLY_NORMAL=$(echo ${{ inputs.repository }} | sed 's/.*\///')
           echo "REPO_ONLY_NORMAL=$REPO_ONLY_NORMAL" >> $GITHUB_ENV
-          REPO_NORMAL=$(echo ${{ inputs.name }} | sed 's/\//-/')
+          REPO_NORMAL=$(echo ${{ inputs.repository }} | sed 's/\//-/')
           echo "REPO_NORMAL=$REPO_NORMAL" >> $GITHUB_ENV
           
-      - name: Checkout ${{ inputs.name }} Repository
+      - name: Checkout ${{ inputs.repository }} Repository
         uses: actions/checkout@v2
         with:
           path: repo
-          repository: ${{ github.event.inputs.name }}
-      - name: Set TAG_VERSION for ${{ github.event.inputs.name }}
+          repository: ${{ github.event.inputs.repository }}
+      - name: Set TAG_VERSION for ${{ github.event.inputs.repository }}
         shell: bash
         run: |
           echo "TAG_VERSION=`grep -m 1 -oP 'version\s*=\s*\"\K\d+\.\d+\.\d+(?=\")' Cargo.toml`" | tee -a $GITHUB_ENV
@@ -71,7 +71,7 @@ jobs:
           author_name: Releaser
           author_email: no_spam@nowhere.nowhere.devnull
           message: 'Release'
-          new_branch: ${{ github.event.inputs.name }}@${{ github.event.inputs.tag }}
+          new_branch: ${{ github.event.inputs.repository }}@${{ github.event.inputs.tag }}
           add: '.'
           cwd: './fused/'
       ###################################################
@@ -116,7 +116,7 @@ jobs:
           tag: ${{ env.REPO_ONLY_NORMAL }}@${{ github.event.inputs.tag }}
           draft: false
           prerelease: false
-          commit: ${{ github.event.inputs.name }}@${{ github.event.inputs.tag }}
+          commit: ${{ github.event.inputs.repository }}@${{ github.event.inputs.tag }}
           removeArtifacts: true
           artifacts: "./binaries/*.bin"
           token: ${{ secrets.GITHUB_TOKEN }}
