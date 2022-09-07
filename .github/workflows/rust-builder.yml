@@ -74,15 +74,15 @@ jobs:
         if: ${{ contains(inputs.os, 'windows') == false }}
         uses: actions/cache@v3
         with:
-          key: zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ inputs.zig-version }}-AAA
+          key: zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ inputs.zig-version }}-AAB
           path: ~/zig
 #          path: ${{ env.HOME }}/zig/zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ inputs.zig-version }}
           
       - name: Debug
+        shell: bash
         run: |
           echo Home=$HOME
           echo GITHUB_WORKSPACE=$GITHUB_WORKSPACE
-          ls -la ./
           find $HOME -type f -name cargo-auditable
           find $HOME -type d -name \*zig\*
           echo PWD=$PWD
@@ -114,11 +114,13 @@ jobs:
 #      - name: ls
 #        run: ls -laR $HOME/
       - name: Install Cargo Tools
+        shell: bash
         run: |
           if [[ ! -f $HOME/.cargo/bin/cargo-auditable ]]; then
             cargo install cargo-auditable rust-audit-info
           fi
       - name: Debug
+        shell: bash
         run: |
           echo Home=$HOME
           echo GITHUB_WORKSPACE=$GITHUB_WORKSPACE
@@ -130,6 +132,7 @@ jobs:
       # Zig & Cross-Compiling
       #
       - name: .Cargo setup for Zig
+        shell: bash
         run: |
           cat >~/zcc.sh <<EOF        
           #!/bin/sh
@@ -164,11 +167,13 @@ jobs:
 
       - name: Build Auditable Build (Locked)
         if: ${{ inputs.use-locked == true }}
+        shell: bash
         run: |
           CC="$HOME/zcc.sh" cargo build --release --locked --bins --color always --target ${{ inputs.rust-target }} --target-dir ${{ env.TARGET_DIR }}
 
       - name: Build Auditable Build (Unlocked)
         if: ${{ inputs.use-locked == false }}
+        shell: bash
         run: |
           CC="$HOME/zcc.sh" cargo build --release --bins --color always --target ${{ inputs.rust-target }} --target-dir ${{ env.TARGET_DIR }}
 
