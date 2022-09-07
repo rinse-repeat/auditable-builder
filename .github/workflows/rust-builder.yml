@@ -133,26 +133,25 @@ jobs:
         run: |
           cat >~/zcc.sh <<EOF        
           #!/bin/sh
-          $HOME/zig/zig-${{ env.ZIG_OS }}-${{ env.ZIG_ARCH }}-${{ inputs.zig-version }}/zig cc -target ${{ env.ZIG_ARCH }}-${{ env.ZIG_OS }} \$@
+          $HOME/zig/zig cc -target ${{ env.ZIG_ARCH }}-${{ env.ZIG_OS }} \$@
           EOF
           cat ~/zcc.sh
           chmod a+xrs ~/zcc.sh
           cat >~/.cargo/config <<EOF
-          [target.x86_64-unknown-linux-gnu]
+          [target.x86_64-unknown-linux-musl]
           linker = "$HOME/zcc.sh"
-          #[target.x86_64-apple-darwin]
-          #[target.aarch64-unknown-linux-gnu]
-          #linker = "aarch64-linux-gnu-gcc"
-          #[target.aarch64-unknown-linux-musl]
-          #linker = "aarch64-linux-gnu-gcc"
-          #[target.armv7-unknown-linux-gnueabihf]
-          #linker = "arm-linux-gnueabihf-gcc"
-          #[target.armv7-unknown-linux-musleabihf]
-          #linker = "arm-linux-gnueabihf-gcc"
-          #[target.arm-unknown-linux-gnueabihf]
-          #linker = "arm-linux-gnueabihf-gcc"
-          #[target.arm-unknown-linux-musleabihf]
-          #linker = "arm-linux-gnueabihf-gcc"
+          [target.aarch64-unknown-linux-musl]
+          linker = "$HOME/zcc.sh"
+          [target.aarch64-unknown-linux-gnu]
+          linker = "aarch64-linux-gnu-gcc"
+          [target.armv7-unknown-linux-gnueabihf]
+          linker = "arm-linux-gnueabihf-gcc"
+          [target.armv7-unknown-linux-musleabihf]
+          linker = "arm-linux-gnueabihf-gcc"
+          [target.arm-unknown-linux-gnueabihf]
+          linker = "arm-linux-gnueabihf-gcc"
+          [target.arm-unknown-linux-musleabihf]
+          linker = "arm-linux-gnueabihf-gcc"
           EOF
       ######################################################
       # Use serials:
