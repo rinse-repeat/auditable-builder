@@ -52,7 +52,9 @@ jobs:
       TARGET_DIR: target/${{ inputs.rust-target }}/release
       REPO_NORMAL: unknown-unknown
     steps:
-      - run: |
+      - name: Normalise repo
+        shell: bash
+        run: |
           REPO_NORMAL=$(echo ${{ inputs.repository }} | sed 's/\//-/')
           echo "REPO_NORMAL=$REPO_NORMAL" >> $GITHUB_ENV
       - name: Pull zig-helper
@@ -61,7 +63,7 @@ jobs:
           repository: rinse-repeat/zig-gh-helper
           path: zig-helper
       - name: Environment ZIG (Non-Windows)
-        if: ${{ contains(inputs.os, 'windows') == false }}
+        shell: bash
         run: |
           source ./zig-helper/zig_map.sh
           zig_triplets_env $GITHUB_ENV ${{ inputs.rust-target }}
@@ -170,8 +172,9 @@ jobs:
         run: |
           cargo auditable build --release --locked --bins --color always --target ${{ inputs.rust-target }} --target-dir ${{ env.TARGET_DIR }}
 
-      - name: ls -laR (debug)
-        run: ls -laR target/
+#      - name: ls -laR (debug)
+#        shell: bash
+#        run: ls -laR target/
       ######################################################
       # Upload artifacts
       #
