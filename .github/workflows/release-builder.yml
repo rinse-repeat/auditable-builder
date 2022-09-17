@@ -28,7 +28,9 @@ jobs:
       # 3) Isolate the release source into a clean branch
       # 4) Roll the release from the 3) branch and include the built binary artifacts
       #
-      - run: |
+      - name: Normalize Env
+        shell: bash
+        run: |
           REPO_ONLY_NORMAL=$(echo ${{ inputs.repository }} | sed 's/.*\///')
           echo "REPO_ONLY_NORMAL=$REPO_ONLY_NORMAL" >> $GITHUB_ENV
           REPO_NORMAL=$(echo ${{ inputs.repository }} | sed 's/\//-/')
@@ -44,13 +46,16 @@ jobs:
         run: |
           echo "TAG_VERSION=`grep -m 1 -oP 'version\s*=\s*\"\K\d+\.\d+\.\d+(?=\")' Cargo.toml`" | tee -a $GITHUB_ENV
       - name: Print Environment
+        shell: bash
         run: |
           echo "TAG_VERSION = ${{ env.TAG_VERSION }}"
       - name: Tar
+        shell: bash
         run: |
           tar --directory=repo -cvf repo-src.tar ./
           mkdir repo-src; tar --directory=repo-src -xvf repo-src.tar
       - name: Unlink Source Repo
+        shell: bash
         run: |
           rm -rf repo
       - name: Bring Release Base Repo
@@ -59,9 +64,11 @@ jobs:
           path: fused
           repository: pinkforest/test-auditable-releases
       - name: Prepare Release Base Repo
+        shell: bash
         run: |
           cd fused/;find -not -path "./.git/*" -not -name ".git" -exec git rm -r {} +
       - name: Fuse Repo Source
+        shell: bash
         run: |
           cp -R ./repo-src/* ./fused/
       - name: Commit Fused Isolated Repo
@@ -79,8 +86,8 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           path: binaries
-      - name: LS
-        run: ls -laR ./
+#      - name: LS
+#        run: ls -laR ./
       #################################################################################################
       # Normalise Docker Tar artifacts into release artifacts in ./binaries without hardcoding triples
       # xx-aarch64-unknown-linux-gnu.tar lives under same directory name
@@ -98,6 +105,7 @@ jobs:
       # Normalise built artifacts into release artifacts in ./binaries without hardcoding triples
       # binaries/normalised-name-triplet/binary -> binary-normalised-name-triplet.bin
       - name: Normalise binary names for Release artifacts
+        shell: bash
         run: |
           cd binaries
           find . -type f -name \* | sed -r 's/\.\/([A-Za-z0-9_\-]+)\/([A-Za-z0-9_\-]+)/mv \0 \2-\1.bin/' | xargs -d $'\n' sh -c 'for arg do $arg ; done' _
