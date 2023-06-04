@@ -108,12 +108,12 @@ jobs:
         shell: bash
         run: |
           cd binaries
-          find . -type f -name \* | sed -r 's/\.\/([A-Za-z0-9_\-]+)\/([A-Za-z0-9_\-]+)/mv \0 \2-\1.bin/' | xargs -d $'\n' sh -c 'for arg do $arg ; done' _
+          find . -type f -regextype posix-egrep -regex '.*/[^\.]+' | sed -r 's/\.\/([A-Za-z0-9_\-]+)\/([A-Za-z0-9_\-]+)/mv \0 \2-\1.bin/' | xargs -d $'\n' sh -c 'for arg do $arg ; done' _
       - name: Normalise Windows binary names for Release artifacts
         shell: bash
         run: |
           cd binaries
-          find . -type f -name \* | sed -r 's/\.\/([A-Za-z0-9_\-]+)\/([A-Za-z0-9_\-]+)/mv \0 \2-\1.exe/' | xargs -d $'\n' sh -c 'for arg do $arg ; done' _      
+          find . -type f -name \*.exe | sed -r 's/\.\/([A-Za-z0-9_\-]+)\/([A-Za-z0-9_\-]+)/mv \0.exe \2-\1/' | xargs -d $'\n' sh -c 'for arg do $arg ; done' _      
       # find . -regextype posix-extended -type d -name "[^.]*" | xargs -d $'\n' sh -c 'for arg do rm -r $arg ; done' _
       ###################################
       # Bundle the final release out

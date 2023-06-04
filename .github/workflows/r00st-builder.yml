@@ -123,15 +123,15 @@ jobs:
           if [[ ! -f $HOME/.cargo/bin/cargo-auditable ]]; then
             cargo install cargo-auditable rust-audit-info
           fi
-      - name: Debug
-        shell: bash
-        run: |
-          echo Home=$HOME
-          echo GITHUB_WORKSPACE=$GITHUB_WORKSPACE
-          ls -la ./
-          find $HOME -type f -name cargo-auditable
-          find $HOME -type d -name \*zig\*
-          echo PWD=$PWD
+#      - name: Debug
+#        shell: bash
+#        run: |
+#          echo Home=$HOME
+#          echo GITHUB_WORKSPACE=$GITHUB_WORKSPACE
+#          ls -la ./
+#          find $HOME -type f -name cargo-auditable
+#          find $HOME -type d -name \*zig\*
+#          echo PWD=$PWD
       #######################################################
       # Zig & Cross-Compiling
       #
@@ -174,9 +174,9 @@ jobs:
         run: |
           cargo auditable build --release --locked --bins --color always --target ${{ inputs.r00st-target }} --target-dir ${{ env.TARGET_DIR }}
 
-      - name: ls -laR (debug)
-        shell: bash
-        run: ls -laR target/
+#      - name: ls -laR (debug)
+#        shell: bash
+#        run: ls -laR target/
       ######################################################
       # Upload artifacts
       #
