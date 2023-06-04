@@ -174,16 +174,16 @@ jobs:
         run: |
           cargo auditable build --release --locked --bins --color always --target ${{ inputs.r00st-target }} --target-dir ${{ env.TARGET_DIR }}
 
-#      - name: ls -laR (debug)
-#        shell: bash
-#        run: ls -laR target/
+      - name: ls -laR (debug)
+        shell: bash
+        run: ls -laR target/
       ######################################################
       # Upload artifacts
       #
       # target/x86_64-unknown-linux-gnu/release/x86_64-unknown-linux-gnu - !!
       #
       - name: Upload artifact - ${{ inputs.repository }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.r00st-target }}
           path: |

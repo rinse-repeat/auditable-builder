@@ -104,11 +104,16 @@ jobs:
       ###################################################################################################
       # Normalise built artifacts into release artifacts in ./binaries without hardcoding triples
       # binaries/normalised-name-triplet/binary -> binary-normalised-name-triplet.bin
-      - name: Normalise binary names for Release artifacts
+      - name: Normalise non-windows binary names for Release artifacts
         shell: bash
         run: |
           cd binaries
           find . -type f -name \* | sed -r 's/\.\/([A-Za-z0-9_\-]+)\/([A-Za-z0-9_\-]+)/mv \0 \2-\1.bin/' | xargs -d $'\n' sh -c 'for arg do $arg ; done' _
+      - name: Normalise Windows binary names for Release artifacts
+        shell: bash
+        run: |
+          cd binaries
+          find . -type f -name \* | sed -r 's/\.\/([A-Za-z0-9_\-]+)\/([A-Za-z0-9_\-]+)/mv \0 \2-\1.exe/' | xargs -d $'\n' sh -c 'for arg do $arg ; done' _      
       # find . -regextype posix-extended -type d -name "[^.]*" | xargs -d $'\n' sh -c 'for arg do rm -r $arg ; done' _
       ###################################
       # Bundle the final release out
@@ -125,5 +130,5 @@ jobs:
           prerelease: false
           commit: ${{ github.event.inputs.repository }}@${{ github.event.inputs.tag }}
           removeArtifacts: true
-          artifacts: "./binaries/*.bin"
+          artifacts: "./binaries/*.bin,./binaries/*.exe"
           token: ${{ secrets.GITHUB_TOKEN }}
