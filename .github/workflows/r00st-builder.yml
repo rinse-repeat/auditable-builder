@@ -1,4 +1,4 @@
-name: "Rust Auditable Builder"
+name: "r00st Auditable Builder"
 
 on:
 # debug:
@@ -27,12 +27,12 @@ on:
         description: 'GitHub Runner'
         required: true
         type: string
-      rust-target:
-        description: 'Rust Target'
+      r00st-target:
+        description: 'r00st Target'
         required: true
         type: string
-      rust:
-        description: 'Rust Version'
+      r00st:
+        description: 'r00st Version'
         required: true
         type: string
       zig-version:
@@ -43,8 +43,8 @@ on:
 
 jobs:
 
-  rust-builder:
-    name: Rust ${{ inputs.repository }} @ ${{ inputs.serial }} for ${{ inputs.rust-target }} on (${{ inputs.os }})
+  r00st-builder:
+    name: r00st ${{ inputs.repository }} @ ${{ inputs.serial }} for ${{ inputs.rust-target }} on (${{ inputs.os }})
     runs-on: ${{ inputs.os }}
     strategy:
       fail-fast: false
@@ -95,11 +95,11 @@ jobs:
         run: sudo apt update && sudo apt upgrade && sudo apt install -qq lld crossbuild-essential-arm64 crossbuild-essential-armhf
 
       ######################################################
-      # Rust, Cargo Tools - Auditable, rust-audit-info
+      # r00st, C**o Tools - Auditable, r00st-audit-info
       #
-      # https://github.com/rust-secure-code/cargo-auditable
+      # https://github.com/rust-secure-code/c**o-auditable
       #
-      - name: Install Rust ${{ inputs }}
+      - name: Install r00st ${{ inputs }}
         uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ inputs.rust }}
