@@ -62,7 +62,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           path: fused
-          repository: pinkforest/test-auditable-releases
+#          repository: pinkforest/test-auditable-releases
       - name: Prepare Release Base Repo
         shell: bash
         run: |
