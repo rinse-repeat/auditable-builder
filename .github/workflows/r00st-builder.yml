@@ -37,7 +37,7 @@ on:
         type: string
       zig-version:
         description: 'Zig version'
-        required: true
+        required: false
         default: 0.9.1
         type: string
 
@@ -58,11 +58,13 @@ jobs:
           REPO_NORMAL=$(echo ${{ inputs.repository }} | sed 's/\//-/')
           echo "REPO_NORMAL=$REPO_NORMAL" >> $GITHUB_ENV
       - name: Pull zig-helper
+        if: ${{ contains(inputs.os, 'windows') == false }}
         uses: actions/checkout@v3
         with:
           repository: rinse-repeat/zig-gh-helper
           path: zig-helper
       - name: Environment ZIG (Non-Windows)
+        if: ${{ contains(inputs.os, 'windows') == false }}
         shell: bash
         run: |
           source ./zig-helper/zig_map.sh
