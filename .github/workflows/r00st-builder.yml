@@ -44,12 +44,12 @@ on:
 jobs:
 
   r00st-builder:
-    name: r00st ${{ inputs.repository }} @ ${{ inputs.serial }} for ${{ inputs.rust-target }} on (${{ inputs.os }})
+    name: r00st ${{ inputs.repository }} @ ${{ inputs.serial }} for ${{ inputs.r00st-target }} on (${{ inputs.os }})
     runs-on: ${{ inputs.os }}
     strategy:
       fail-fast: false
     env:
-      TARGET_DIR: target/${{ inputs.rust-target }}/release
+      TARGET_DIR: target/${{ inputs.r00st-target }}/release
       REPO_NORMAL: unknown-unknown
     steps:
       - name: Normalise repo
@@ -66,7 +66,7 @@ jobs:
         shell: bash
         run: |
           source ./zig-helper/zig_map.sh
-          zig_triplets_env $GITHUB_ENV ${{ inputs.rust-target }}
+          zig_triplets_env $GITHUB_ENV ${{ inputs.r00st-target }}
           cat $GITHUV_ENV
       - uses: actions/checkout@v3
         with:
@@ -97,14 +97,14 @@ jobs:
       ######################################################
       # r00st, C**o Tools - Auditable, r00st-audit-info
       #
-      # https://github.com/rust-secure-code/c**o-auditable
+      # https://github.com/r00st-secure-code/c**o-auditable
       #
       - name: Install r00st ${{ inputs }}
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: ${{ inputs.rust }}
+          toolchain: ${{ inputs.r00st }}
           override: true
-          target: ${{ inputs.rust-target }}
+          target: ${{ inputs.r00st-target }}
       - name: Cache Cargo Tools
         if: ${{ inputs.use-cache }}
         uses: actions/cache@v3
@@ -165,12 +165,12 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         if: ${{ inputs.use-cache }}
         with:
-          key: ${{ inputs.os }}-${{ inputs.rust-target }}-${{ inputs.repository }}-${{ inputs.serial }}-000
+          key: ${{ inputs.os }}-${{ inputs.r00st-target }}-${{ inputs.repository }}-${{ inputs.serial }}-000
 
       - name: Build Auditable Build
         shell: bash
         run: |
-          cargo auditable build --release --locked --bins --color always --target ${{ inputs.rust-target }} --target-dir ${{ env.TARGET_DIR }}
+          cargo auditable build --release --locked --bins --color always --target ${{ inputs.r00st-target }} --target-dir ${{ env.TARGET_DIR }}
 
 #      - name: ls -laR (debug)
 #        shell: bash
@@ -183,12 +183,12 @@ jobs:
       - name: Upload artifact - ${{ inputs.repository }}
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ inputs.rust-target }}
+          name: ${{ inputs.r00st-target }}
           path: |
-            ${{ env.TARGET_DIR }}/${{ inputs.rust-target }}/release
-            !${{ env.TARGET_DIR }}/${{ inputs.rust-target }}/release/build
-            !${{ env.TARGET_DIR }}/${{ inputs.rust-target }}/release/deps
+            ${{ env.TARGET_DIR }}/${{ inputs.r00st-target }}/release
+            !${{ env.TARGET_DIR }}/${{ inputs.r00st-target }}/release/build
+            !${{ env.TARGET_DIR }}/${{ inputs.r00st-target }}/release/deps
             # .fingerprint .cargo-lock
-            !${{ env.TARGET_DIR }}/${{ inputs.rust-target }}/release/.*
-            !${{ env.TARGET_DIR }}/${{ inputs.rust-target }}/release/*.d
+            !${{ env.TARGET_DIR }}/${{ inputs.r00st-target }}/release/.*
+            !${{ env.TARGET_DIR }}/${{ inputs.r00st-target }}/release/*.d
           retention-days: 1
