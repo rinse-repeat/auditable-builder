@@ -183,7 +183,7 @@ jobs:
         if: ${{ inputs.use-features != '' }}
         shell: bash
         run: |
-          cargo auditable build --release --locked --features ${{ inputs.use-featres }} --bins --color always --target ${{ inputs.r00st-target }} --target-dir ${{ env.TARGET_DIR }}
+          cargo auditable build --release --locked --features ${{ inputs.use-features }} --bins --color always --target ${{ inputs.r00st-target }} --target-dir ${{ env.TARGET_DIR }}
 
 
 #      - name: ls -laR (debug)

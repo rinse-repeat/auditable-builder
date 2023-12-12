@@ -1,23 +1,23 @@
-# r00st auditable-builder
-Build Projects with r00st Auditable
+# auditable-builder
+Build Rust Projects with Auditable
 
 e.g. w/ matrix.json
 ```json
 [
-    {"r00st-target": "x86_64-pc-windows-gnu"     , "os": "windows-latest" , "r00st": "stable"},
-    {"r00st-target": "x86_64-pc-windows-msvc"    , "os": "windows-latest" , "r00st": "stable"},
-    {"r00st-target": "i686-pc-windows-gnu"       , "os": "windows-latest" , "r00st": "stable"},
-    {"r00st-target": "i686-pc-windows-msvc"      , "os": "windows-latest" , "r00st": "stable"},
-    {"r00st-target": "aarch64-pc-windows-gnu"    , "os": "windows-latest" , "r00st": "stable"},
-    {"r00st-target": "aarch64-pc-windows-msvc"   , "os": "windows-latest" , "r00st": "stable"},
-    {"r00st-target": "armv7-unknown-linux-gnueabihf" , "os": "ubuntu-latest"  , "r00st": "stable"},
-    {"r00st-target": "armv7-unknown-linux-musleabihf", "os": "ubuntu-latest"  , "r00st": "stable"},
-    {"r00st-target": "arm-unknown-linux-gnueabihf"   , "os": "ubuntu-latest"  , "r00st": "stable"},
-    {"r00st-target": "armv7-unknown-linux-musleabihf", "os": "ubuntu-latest"  , "r00st": "stable"},
-    {"r00st-target": "x86_64-unknown-linux-gnu"  , "os": "ubuntu-latest"  , "r00st": "stable"},
-    {"r00st-target": "aarch64-unknown-linux-gnu" , "os": "ubuntu-latest"  , "r00st": "stable"},
-    {"r00st-target": "x86_64-apple-darwin"       , "os": "macos-latest"   , "r00st": "stable"},
-    {"r00st-target": "aarch64-apple-darwin"      , "os": "macos-latest"   , "r00st": "stable"}
+    {"rust-target": "x86_64-pc-windows-gnu"     , "os": "windows-latest" , "rust": "stable"},
+    {"rust-target": "x86_64-pc-windows-msvc"    , "os": "windows-latest" , "rust": "stable"},
+    {"rust-target": "i686-pc-windows-gnu"       , "os": "windows-latest" , "rust": "stable"},
+    {"rust-target": "i686-pc-windows-msvc"      , "os": "windows-latest" , "rust": "stable"},
+    {"rust-target": "aarch64-pc-windows-gnu"    , "os": "windows-latest" , "rust": "stable"},
+    {"rust-target": "aarch64-pc-windows-msvc"   , "os": "windows-latest" , "rust": "stable"},
+    {"rust-target": "armv7-unknown-linux-gnueabihf" , "os": "ubuntu-latest"  , "rust": "stable"},
+    {"rust-target": "armv7-unknown-linux-musleabihf", "os": "ubuntu-latest"  , "rust": "stable"},
+    {"rust-target": "arm-unknown-linux-gnueabihf"   , "os": "ubuntu-latest"  , "rust": "stable"},
+    {"rust-target": "armv7-unknown-linux-musleabihf", "os": "ubuntu-latest"  , "rust": "stable"},
+    {"rust-target": "x86_64-unknown-linux-gnu"  , "os": "ubuntu-latest"  , "rust": "stable"},
+    {"rust-target": "aarch64-unknown-linux-gnu" , "os": "ubuntu-latest"  , "rust": "stable"},
+    {"rust-target": "x86_64-apple-darwin"       , "os": "macos-latest"   , "rust": "stable"},
+    {"rust-target": "aarch64-apple-darwin"      , "os": "macos-latest"   , "rust": "stable"}
 ]
 ```
 
@@ -61,12 +61,12 @@ jobs:
           echo "::set-output name=matrix::$content"
   build:
     needs: [matrix]
-    uses: rinse-repeat/auditable-builder/.github/workflows/r00st-builder.yml
+    uses: rinse-repeat/auditable-builder/.github/workflows/rust-builder.yml
     with:
       repository: ${{ github.event.inputs.repository }}
-      r00st-target: ${{ matrix.r00st-target }}
+      rust-target: ${{ matrix.rust-target }}
       os: ${{ matrix.os }}
-      r00st: ${{ matrix.r00st }}
+      rust: ${{ matrix.rust }}
       use-cache: true
       use-locked: false
       serial: AAB
