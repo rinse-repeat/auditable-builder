@@ -1,4 +1,4 @@
-name: "r00st Release Builder"
+name: "rust Release Builder"
 
 on:
 #  workflow_dispatch:
