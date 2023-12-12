@@ -13,6 +13,10 @@ on:
         description: 'Unique Serial Cache Id'
         required: true
         type: string
+      use-features:
+        description: 'Use features?'
+        requires: true
+        type: string
       use-cache:
         description: 'Use cache?'
         required: true
@@ -172,7 +176,7 @@ jobs:
       - name: Build Auditable Build
         shell: bash
         run: |
-          cargo auditable build --release --locked --bins --color always --target ${{ inputs.r00st-target }} --target-dir ${{ env.TARGET_DIR }}
+          cargo auditable build --release --locked --features ${{ inputs.use-featres }} --bins --color always --target ${{ inputs.r00st-target }} --target-dir ${{ env.TARGET_DIR }}
 
 #      - name: ls -laR (debug)
 #        shell: bash
